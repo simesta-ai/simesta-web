@@ -1,0 +1,95 @@
+/* : "bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-600",
+      : "bg-secondary-600 text-white hover:bg-secondary-700 focus-visible:ring-secondary-600",
+      : "border border-border bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 text-text-primary",
+      : "bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 text-text-primary",
+      : "bg-transparent underline-offset-4 hover:underline text-primary-600 hover:text-primary-700",
+      : "bg-error-600 text-white hover:bg-error-700 focus-visible:ring-error-600", */
+/* create the followng class styles */
+
+.bg-primary-600 {
+  background-color: var(--color-primary-600);
+}
+.rounded-full {
+  width: var(--spacing-9);
+  height: var(--spacing-9);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-radius: var(--radius-full);
+}
+.rounded-full.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+.bg-neutral-900 {
+  background-color: var(--color-neutral-900);
+}
+.bg-neutral-900.cursor-not-allowed,
+.bg-neutral-900.cursor-not-allowed:hover,
+  .dark
+  .bg-neutral-900.cursor-not-allowed:hover,
+.dark .bg-neutral-900.cursor-not-allowed {
+  background-color: var(--color-neutral-500);
+}
+
+.dark .bg-neutral-900 {
+  background-color: var(--color-neutral-50);
+}
+.dark .bg-neutral-900:hover {
+  background-color: var(--color-neutral-300);
+}
+.bg-neutral-900:hover {
+  background-color: var(--color-neutral-700);
+}
+
+.bg-neutral-800 {
+  background-color: var(--color-neutral-800);
+}
+.bg-primary-700 {
+  background-color: var(--color-primary-700);
+}
+.bg-secondary-600 {
+  background-color: var(--color-secondary-600);
+}
+.bg-secondary-700 {
+  background-color: var(--color-secondary-700);
+}
+.bg-error-600 {
+  background-color: var(--color-error-600);
+}
+.bg-error-700 {
+  background-color: var(--color-error-700);
+}
+.bg-transparent {
+  background-color: transparent;
+}
+.bg-neutral-100 {
+  background-color: var(--color-neutral-100);
+}
+.dark .outline:hover {
+  background-color: var(--color-border);
+}
+
+.outline:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.text-white {
+  color: var(--color-neutral-50);
+}
+.text-text-primary {
+  color: var(--color-text-primary);
+}
+.text-primary-600 {
+  color: var(--color-primary-600);
+}
+.text-primary-700 {
+  color: var(--color-primary-700);
+}
+
+.border {
+  border: 1px solid var(--color-border);
+}
+.underline-offset-4 {
+  text-underline-offset: 4px;
+}
