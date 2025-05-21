@@ -66,12 +66,12 @@ const AIMessageRenderer = ({ content }: Props) => {
         let text = domNode.data;
 
         // Replace block math
-        text = text.replace(/\$\$([^$]+)\$\$/g, (_, math) =>
+        text = text.replace(/\$\$([^$]+)\$\$/g, (_: any, math: string) =>
           renderMath(math, true)
         );
 
         // Replace inline math
-        text = text.replace(/\$([^$\n]+)\$/g, (_, math) =>
+        text = text.replace(/\$([^$\n]+)\$/g, (_: any, math: string) =>
           renderMath(math, false)
         );
 

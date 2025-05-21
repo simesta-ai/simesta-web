@@ -3,8 +3,10 @@ import { Course } from "@/lib/types";
 import { getTimeDescription } from "@/lib/workers";
 import { ChevronDown, Check } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Module = ({ module }: { module: Course["modules"][0] }) => {
+  const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => {
@@ -14,7 +16,7 @@ const Module = ({ module }: { module: Course["modules"][0] }) => {
     <div className="module">
       <div className="module-header-con">
         <div className="flex flex-col gap-2">
-          <Link href={"/"}>
+          <Link href={`${pathname}/module/${module.id}`}>
             <h3 className="module-title">{module.title}</h3>
           </Link>
           <p className="course-desc-text text-sm">

@@ -54,6 +54,7 @@ export interface Module {
   duration: number; // in seconds
   weekly_lectures: Week[];
   learning_outcomes: string[];
+  notes?: string;
 }
 
 export interface Course {
@@ -102,6 +103,7 @@ export interface ModuleProgress {
   progress: number; // 0 - 100
   completedAt?: Date;
   lessonProgress: LessonProgress[];
+  notes?: string;
 }
 
 export interface LessonProgress {

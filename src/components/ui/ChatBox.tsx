@@ -7,7 +7,7 @@ import Button from "./Button";
 import OptionButton from "./OptionButton";
 import Loader from "./Loader";
 
-export default function Chatbox({ type }: { type: string }) {
+export default function Chatbox({ type }: { type?: string }) {
   const [prompt, setPrompt] = useState("");
   const [abilities, setAbilities] = useState({
     editing: false,

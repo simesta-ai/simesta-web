@@ -3,8 +3,14 @@ import { getDateDescription } from "@/lib/workers";
 import Button from "./Button";
 import { Progress } from "./Progress";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function CourseCard({ course }: { course: CourseAbridged }) {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/course/${course.id}`);
+  };
+
   return (
     <div className="card-container flex flex-col gap-4 p-4 rounded-lg">
       <Image
@@ -22,7 +28,7 @@ export default function CourseCard({ course }: { course: CourseAbridged }) {
         <span className="subtext font-bold text-xs">{course.level}</span>
       </div>
       <p className="subtext text-sm">{course.description}</p>
-      <Button variant="primary" size="sm">
+      <Button onClick={handleClick} variant="primary" size="sm">
         Go to course
       </Button>
     </div>

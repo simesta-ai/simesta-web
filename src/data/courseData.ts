@@ -46,6 +46,7 @@ export const courseData: CourseWithProgress = {
       id: "module-1",
       title: "Introduction to Machine Learning",
       position: 1,
+      notes: "This is a sample note for the module.",
       description:
         "Welcome to the Machine Learning Specialization! You're joining millions of others who have taken either this or the original course, which led to the founding of Coursera, and has helped millions of other learners, like you, take a look at the exciting world of machine learning!",
       duration: 7,
@@ -252,6 +253,7 @@ export const userProgressData: UserCourseProgress = {
       completed: true,
       progress: 100,
       completedAt: new Date("2023-01-05"),
+      notes: "This is a sample user note for the module.",
       lessonProgress: [
         {
           lessonId: "lecture-1-1",
