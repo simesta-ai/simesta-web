@@ -2,14 +2,18 @@
     background-color: var(--color-neutral-150);
     border: 1px solid var(--color-border);
     border-radius: var(--spacing-2);
+    width: 700px;
     opacity: 1;
     z-index: 5;
+}
+.chatbox.on-chat {
+    width: 100%;
 }
 .dark .chatbox {
     background-color: var(--color-neutral-750);
 }
 .chat-input {
-    width: 700px;
+    width: 100%;
 }
 .options {
     padding: 0;
@@ -17,12 +21,68 @@
 .on-chat-section.chat-input {
     width: 100%;;
 }
+.recording-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-neutral-700);
+    border-radius: var(--radius-full);
+    width: var(--spacing-10);
+    height: var(--spacing-10);
+}
+.recording-btn.disabled {
+    cursor: not-allowed;
+}
+.recording-btn.disabled.hover {
+    background-color: transparent;
+}
+.recording-btn:hover {
+    background-color: var(--color-neutral-200);
+}
+.dark .recording-btn {
+    color: var(--color-neutral-200);
+}
+.loading-chat-square {
+    background-color: var(--color-neutral-200);
+    border-radius: 3px;
+    width: var(--spacing-3);
+    height: var(--spacing-3);
+}
+
+.dark .recording-btn:hover {
+    background-color: var(--color-neutral-600);
+}
+
+.audio-visualizer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 100%;
+    gap: 4px;
+    padding: 0 10px;
+  }
+  
+  .audio-visualizer .bar {
+    width: var(--spacing-8);
+    height: var(--spacing-4);
+    background: linear-gradient(to top, var(--color-neutral-400), var(--color-neutral-500)); /* Gemini gradient */
+    animation: audiopulse 1s infinite ease-in-out;
+    border-radius: 2px;
+  }
+  
+  @keyframes audiopulse {
+    0%, 100% {
+      transform: scaleY(0.4);
+    }
+    50% {
+      transform: scaleY(1.2);
+    }
+  }
+  
 
 @media(max-width: 640px) {
     .chatbox {
         width: 90%;
-    }
-    .chat-input {
-        width: 100%;
     }
 }

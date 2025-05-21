@@ -2,17 +2,84 @@
 
 import "@/styles/components/chatbox.css";
 import { useState, useRef, useEffect } from "react";
-import { ArrowUp, Paperclip } from "lucide-react";
+import { ArrowUp, Paperclip, Pencil, Mic, Check, X } from "lucide-react";
 import Button from "./Button";
 import OptionButton from "./OptionButton";
+import Loader from "./Loader";
 
 export default function Chatbox({ type }: { type: string }) {
   const [prompt, setPrompt] = useState("");
+  const [abilities, setAbilities] = useState({
+    editing: false,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+
+  const [stream, setStream] = useState<MediaStream | null>(null);
+
+  useEffect(() => {
+    const startRecording = async () => {
+      try {
+        const newStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        setStream(newStream);
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+      }
+    };
+
+    if (isRecording) {
+      startRecording();
+    } else {
+      stream?.getTracks().forEach((track) => track.stop());
+    }
+
+    return () => {
+      stream?.getTracks().forEach((track) => track.stop());
+    };
+  }, [isRecording, stream]);
+
+  const submitAudioForTranscription = async () => {
+    if (stream) {
+      setIsTranscribing(true);
+      // Simulate audio transcription
+      setTimeout(() => {
+        setIsTranscribing(false);
+        setPrompt("Transcribed audio text");
+        setIsRecording(false);
+        setStream(null);
+      }, 2000);
+    }
+  };
+
+  const cancelRecording = () => {
+    setIsRecording(false);
+    setStream(null);
+  };
+
+  const toggleEditing = () => {
+    setAbilities((prev) => ({
+      ...prev,
+      editing: !prev.editing,
+    }));
+  };
+
   const options = [
     {
       name: "Attach Files",
       icon: <Paperclip size={"1em"} />,
       onClick: () => console.log("Attach Files"),
+    },
+    {
+      name: "Edit",
+      icon: <Pencil size={"1em"} />,
+      onClick: () => toggleEditing(),
+      type: `${abilities.editing ? "ability-active" : "ability"}` as
+        | "ability-active"
+        | "ability"
+        | undefined,
     },
   ];
 
@@ -64,25 +131,84 @@ export default function Chatbox({ type }: { type: string }) {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className={`chatbox flex flex-col gap-4 padding-3`}>
-      <textarea className={`${type == 'chat'? 'on-chat-section' : ''} chat-input`} placeholder={type == 'chat' ? "Say something..." : placeholder}
-        value={prompt}
-        onChange={handlePromptChange}
-      />
-      <div className="actions flex justify-between items-center gap-4">
-        <div className="options">
-          {options.map((option) => (
-            <OptionButton
-              key={option.name}
-              text={option.name}
-              icon={option.icon}
-              onClick={option.onClick}
+    <div className={`chatbox ${type == "chat" ? "on-chat" : ""} relative flex flex-col gap-4 padding-3`}>
+      {!isRecording ? (
+        <textarea
+          className={`${type == "chat" ? "on-chat-section" : ""} chat-input`}
+          placeholder={type == "chat" ? "Say something..." : placeholder}
+          value={prompt}
+          onChange={handlePromptChange}
+        />
+      ) : (
+        <div className="audio-visualizer">
+          {[...Array(60)].map((_, i) => (
+            <span
+              key={i}
+              className="bar"
+              style={{ animationDelay: `${i * 0.05}s` }}
             />
           ))}
         </div>
-        <Button variant="round-secondary" size="sm" disabled={prompt.length > 0 ? false : true}>
-          <ArrowUp size={"2em"} />
-        </Button>
+      )}
+      <div className="actions flex justify-between items-center gap-4">
+        {!isRecording ? (
+          <div className="options gap-2 flex">
+            {options.map((option) => (
+              <OptionButton
+                key={option.name}
+                text={option.name}
+                icon={option.icon}
+                onClick={option.onClick}
+                type={option.type}
+              />
+            ))}
+          </div>
+        ) : (
+          <span></span>
+        )}
+        <div className="flex gap-2 justify-center items-center">
+          {!isRecording ? (
+            <>
+              <button
+                onClick={() => setIsRecording(true)}
+                className="recording-btn"
+              >
+                <Mic size={"1.5em"} />
+              </button>
+              <Button
+                variant="round-secondary"
+                size="sm"
+                disabled={prompt.length > 0 && !isLoading ? false : true}
+              >
+                {!isLoading ? (
+                  <ArrowUp size={"2em"} />
+                ) : (
+                  <div className="loading-chat-square" />
+                )}
+              </Button>
+            </>
+          ) : (
+            <>
+              {!isTranscribing ? (
+                <>
+                  <button
+                    onClick={submitAudioForTranscription}
+                    className="recording-btn"
+                  >
+                    <Check size={"1.5em"} />
+                  </button>
+                  <button onClick={cancelRecording} className="recording-btn">
+                    <X size={"1.5em"} />
+                  </button>
+                </>
+              ) : (
+                <button className="recording-btn disabled">
+                  <Loader size={24} />
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

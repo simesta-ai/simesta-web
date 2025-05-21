@@ -49,12 +49,12 @@ export default function Home() {
       <section className="hero items-center flex flex-col">
         <h3 className="hero-text">
           Create a course and{" "}
-          <span className="text-primary-600">start learning.</span>
+          <span className="text-primary-600 ai-gradient-text">start learning.</span>
         </h3>
         <p className="text-md subtext">
           Learn anything you want, at your own pace.
         </p>
-        <Chatbox />
+        <Chatbox type="dashboard" />
         <div className="flex gap-4 flex-wrap justify-center items-center padding-4">
           {recommendations.map((r, i) => {
             return (

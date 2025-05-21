@@ -4,13 +4,13 @@ import Chatbox from "@/components/ui/ChatBox";
 import "@/styles/pages/home.css";
 import "@/styles/pages/dashboard.css";
 import CourseCard from "@/components/ui/CourseCard";
-import { Course } from "@/lib/types";
+import { CourseAbridged } from "@/lib/types";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function DashboardPage() {
-  const [isLoadingUserCourses] = useState(true);
-  const [isLoadingCommunityCourses] = useState(true);
+  const [isLoadingUserCourses] = useState(false);
+  const [isLoadingCommunityCourses] = useState(false);
 
   const recommendations = [
     "Data analysis with Python",
@@ -18,13 +18,14 @@ export default function DashboardPage() {
     "Introduction to cloud computing with AWS",
   ];
 
-  const courses: Course[] = [
+  const courses: CourseAbridged[] = [
     {
       id: "gshag-usnund",
       title: "Data analysis with Python",
-      topics_completed: "2/10",
       created_at: new Date(),
-      progress: 20,
+      level: "Beginner",
+      duration: 3893733,
+      updated_at: new Date(),
       description: "Learn data analysis using Python and its libraries.",
       image:
         "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
@@ -33,9 +34,10 @@ export default function DashboardPage() {
     {
       id: "gshag-usnund",
       title: "Data analysis with Python",
-      topics_completed: "2/10",
       created_at: new Date(),
-      progress: 20,
+      level: "Beginner",
+      duration: 3893733,
+      updated_at: new Date(),
       description: "Learn data analysis using Python and its libraries.",
       image:
         "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
@@ -43,20 +45,23 @@ export default function DashboardPage() {
     {
       id: "gshag-usnund",
       title: "Data analysis with Python",
-      topics_completed: "2/10",
+      level: "Beginner",
+      duration: 3893733,
+      updated_at: new Date(),
       created_at: new Date(),
-      progress: 20,
       description: "Learn data analysis using Python and its libraries.",
       image:
         "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
     },
   ];
 
-  const communityCourses: Course[] = [
+  const communityCourses: CourseAbridged[] = [
     {
       id: "gshag-usnund",
       title: "Data analysis with Python",
-      topics_completed: "2/10",
+      level: "Beginner",
+      duration: 3893733,
+      updated_at: new Date(),
       created_at: new Date(),
       description: "Learn data analysis using Python and its libraries.",
       image:
@@ -64,7 +69,9 @@ export default function DashboardPage() {
     },
     {
       id: "gshag-uusbud",
-      topics_completed: "2/10",
+      level: "Beginner",
+      duration: 3893733,
+      updated_at: new Date(),
       created_at: new Date(),
       title: "Data analysis with Python",
       description: "Learn data analysis using Python and its libraries.",

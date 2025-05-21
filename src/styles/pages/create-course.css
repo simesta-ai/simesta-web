@@ -38,7 +38,8 @@
     color: var(--color-neutral-700);
 }
 .stage-container.current-stage {
-    border-color: var(--color-neutral-700);
+    border-color: var(--color-neutral-300);
+    background-color: var(--color-neutral-150);
     .stage-title {
         color: var(--color-neutral-700);
     }
@@ -47,7 +48,8 @@
     }
 }
 .dark .stage-container.current-stage {
-    border-color: var(--color-neutral-300);
+    border-color: var(--color-neutral-500);
+    background-color: var(--color-neutral-700);
     .stage-title {
         color: var(--color-neutral-200);
     }
@@ -57,7 +59,7 @@
 }
 .stage-container.completed-stage {
     background-color: var(--color-secondary-50);
-    border-color: var(--color-secondary-100);
+    border-color: var(--color-secondary-400);
     .stage-title {
         color: var(--color-neutral-600);
     }

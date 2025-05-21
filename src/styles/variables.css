@@ -6,11 +6,16 @@
     --color-primary-300: rgb(196, 181, 253);
     --color-primary-350: #a78bfa;
     --color-primary-400: #a78bfa;
+    --color-primary-400-trans: rgba(167, 139, 250, 0.253);
     --color-primary-500: rgb(139, 92, 246);
+    --color-primary-500-trans: rgba(139, 92, 246, 0.253);
     --color-primary-600: #7c4dff;
+    --color-primary-600-trans: rgba(124, 77, 255, 0.253);
     --color-primary-700: #6d28d9;
     --color-primary-800: #5b21b6;
     --color-primary-900: #4c1d95;
+    --color-primary-900-trans: rgba(76, 29, 149, 0.2);
+
   
     --color-secondary-50: #e6fffa;
     --color-secondary-100: #ccfff4;
@@ -125,6 +130,8 @@
     --spacing-4: 1rem;      /* 16px */
     --spacing-5: 1.25rem;   /* 20px */
     --spacing-6: 1.5rem;    /* 24px */
+    --spacing-6-5: 1.625rem;  /* 26px */
+    --spacing-7: 1.75rem;   /* 28px */
     --spacing-8: 2rem;      /* 32px */
     --spacing-9: 2.25rem;   /* 36px */
     --spacing-10: 2.5rem;   /* 40px */

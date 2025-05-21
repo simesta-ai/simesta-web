@@ -29,8 +29,8 @@ const getInitialTheme = (): 'light' | 'dark' => {
 
 const initialState: UiState = {
   theme: 'dark', // Will be initialized correctly in the browser
-  courseHeaderTitle: 'Introduction to Data Analysis', 
-  isSideSectionOpen: true,
+  courseHeaderTitle: 'Supervised Machine Learning: Regression and Classification', 
+  isSideSectionOpen: false,
   isMobileMenuOpen: false,
   sideSectionType: 'chat',
   mobileMenuType: 'chat',

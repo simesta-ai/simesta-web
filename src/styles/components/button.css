@@ -26,8 +26,7 @@
 }
 .bg-neutral-900.cursor-not-allowed,
 .bg-neutral-900.cursor-not-allowed:hover,
-  .dark
-  .bg-neutral-900.cursor-not-allowed:hover,
+.dark .bg-neutral-900.cursor-not-allowed:hover,
 .dark .bg-neutral-900.cursor-not-allowed {
   background-color: var(--color-neutral-500);
 }
@@ -92,4 +91,47 @@
 }
 .underline-offset-4 {
   text-underline-offset: 4px;
+}
+
+.outline-ability {
+  border: 1px solid var(--color-primary-200);
+  background-color: var(--color-primary-50);
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-4);
+  color: var(--color-primary-600);
+}
+.outline-ability:hover {
+  background-color: var(--color-primary-100);
+}
+.outline-ability-active {
+  border: 1px solid var(--color-primary-400);
+  background-color: var(--color-primary-200);
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-4);
+  color: var(--color-primary-700);
+}
+.dark .outline-ability {
+  border: 1px solid var(--color-primary-600-trans);
+  background-color: var(--color-primary-900-trans);
+  color: var(--color-primary-300);
+}
+.dark .outline-ability:hover {
+  background-color: var(--color-primary-600-trans);
+}
+
+.dark .outline-ability-active {
+  border: 1px solid var(--color-primary-700);
+  background-color: var(--color-primary-600-trans);
+  color: var(--color-primary-400);
+}
+.ghost:hover, .ghost.active {
+  background-color: var(--color-neutral-200);
+}
+.dark .ghost:hover, .dark .ghost.active {
+  background-color: var(--color-neutral-700);
+}
+.ghost {
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-primary);
 }

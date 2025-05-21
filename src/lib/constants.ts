@@ -42,3 +42,4 @@ export const STORAGE_KEYS = {
   USER: "simesta:auth:user",
   THEME: "simesta:theme",
 };
+

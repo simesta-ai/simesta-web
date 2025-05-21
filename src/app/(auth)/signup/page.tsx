@@ -58,7 +58,6 @@ export default function SignupPage() {
   };
 
   useEffect(() => {
-    console.log("error", error);
     dispatch(clearError());
   }, []);
 

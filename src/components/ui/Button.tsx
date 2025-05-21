@@ -4,13 +4,14 @@ import React from "react";
 import "@/styles/components/button.css";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "round-secondary";
-  size?: "sm" | "md" | "lg" | "xs";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "round-secondary" | "outline-ability" | "outline-ability-active";
+  size?: "sm" | "md" | "lg" | "xs" | "xxs";
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
   children: React.ReactNode;
+  active?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -23,6 +24,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       fullWidth = false,
       children,
+      active,
       className = "",
       disabled,
       ...props
@@ -34,11 +36,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const variantStyles = {
       primary: "bg-primary-600 text-white",
       secondary: "bg-neutral-900 text-sec",
+      ghost: "ghost bg-transparent hover:bg-neutral-100",
       "round-secondary": "bg-neutral-900 text-sec rounded-full",
       outline: "border border-border bg-transparent outline text-text-primary",
+      "outline-ability": "outline-ability",
+      "outline-ability-active": "outline-ability-active",
     };
 
     const sizeStyles = {
+      xxs: "text-xs h-6-5 px-2",
       xs: "text-xs h-8 px-2 ",
       sm: "text-sm h-9 px-3 ",
       md: "text-md h-10 px-4",
@@ -54,7 +60,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={getStyles() + `${isLoading || disabled ? " cursor-not-allowed" : ""}`}
+        className={getStyles() + `${active ? " active" : ""}` + `${isLoading || disabled ? " cursor-not-allowed" : ""} `}
         disabled={disabled || isLoading}
         {...props}
       >

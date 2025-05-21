@@ -39,7 +39,7 @@ const CourseHeader = () => {
             alt="logo"
             width={20}
             height={20}
-            className="rounded-full course-logo-img"
+            className=""
           />
           <ChevronDown className="neutral-icon" size={16} />
         </button>
