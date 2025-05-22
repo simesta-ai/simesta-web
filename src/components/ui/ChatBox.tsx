@@ -7,12 +7,11 @@ import Button from "./Button";
 import OptionButton from "./OptionButton";
 import Loader from "./Loader";
 
-export default function Chatbox({ type }: { type?: string }) {
+export default function Chatbox({ type, handleSubmit, loading }: { type?: string, handleSubmit: (prompt: string) => void, loading: boolean }) {
   const [prompt, setPrompt] = useState("");
   const [abilities, setAbilities] = useState({
     editing: false,
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
 
@@ -178,9 +177,10 @@ export default function Chatbox({ type }: { type?: string }) {
               <Button
                 variant="round-secondary"
                 size="sm"
-                disabled={prompt.length > 0 && !isLoading ? false : true}
+                onClick={() => handleSubmit(prompt)}
+                disabled={prompt.length > 0 && !loading ? false : true}
               >
-                {!isLoading ? (
+                {!loading ? (
                   <ArrowUp size={"2em"} />
                 ) : (
                   <div className="loading-chat-square" />

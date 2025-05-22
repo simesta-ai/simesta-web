@@ -76,7 +76,9 @@
   transition: all 0.3s ease;
   overflow-y: scroll;
   width: 100%;
-  overflow-wrap: normal;
+  overflow-x: hidden;
+
+  word-wrap: break-word;
   max-height: 84%;
 }
 

@@ -14,54 +14,9 @@ const ChatSection = ({ chat_id }: { chat_id: string }) => {
   const { theme } = useSelector((state: RootState) => state.ui);
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
-  const dummyAIMessage = `
-Machine Learning (ML) is a subset of artificial intelligence that enables systems to learn from data and improve over time without being explicitly programmed.
-
-## 📊 Types of Machine Learning
-
-| Type            | Description                                                                 |
-|-----------------|-----------------------------------------------------------------------------|
-| Supervised      | Learns from labeled data                                                    |
-| Unsupervised    | Identifies patterns in unlabeled data                                       |
-| Semi-supervised | Combines a small amount of labeled data with a large amount of unlabeled data |
-| Reinforcement   | Learns by interacting with an environment to maximize reward                |
-
-## 🧠 Example: Linear Regression
-
-Linear regression attempts to model the relationship between a scalar dependent variable $\\( y \\)$ and one or more explanatory variables $\\( x \\)$.
-
-The equation is:
-
-$$
-y = \\beta_0 + \\beta_1 x + \\epsilon
-$$
-
-Where:
-
-- $\\( \\beta_0 \\)$ represents the Intercept  
-- $\\( \\beta_1 \\)$ represents the Slope  
-- $\\( \\epsilon \\)$ represents the Error term
-
-
-## 💻 Sample Code (Python)
-
-\`\`\`python
-from sklearn.linear_model import LinearRegression
-import numpy as np
-
-# Data
-X = np.array([[1], [2], [3], [4]])
-y = np.array([2, 3, 4, 5])
-
-# Model
-model = LinearRegression()
-model.fit(X, y)
-
-# Prediction
-prediction = model.predict([[5]])
-print("Predicted value for x=5:", prediction[0])
-\`\`\`
-`;
+  const [aiResponse, setAIResponse] = useState("");
+  const socket = new WebSocket("ws://localhost:8000");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const el = chatBodyRef.current;
@@ -79,6 +34,43 @@ print("Predicted value for x=5:", prediction[0])
     const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 20;
     setShowScrollBtn(!isAtBottom);
   };
+
+  const handleSubmit = (prompt: string) => {
+    setIsLoading(true);
+    setAIResponse("");
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(prompt);
+      setAIResponse("");
+    }
+  }
+
+  useEffect(() => {
+  
+    socket.onopen = () => {
+      console.log("Connected to Simesta AI server");
+    };
+  
+    socket.onmessage = (event) => {
+      console.log("Received message:", event.data);
+      const data = JSON.parse(event.data);
+      if (data.type === "token") {
+        setAIResponse((prev) => prev + data.value);
+      } else if (data.type === "done") {
+        console.log("Message complete");
+        setIsLoading(false);
+      }
+    };
+  
+    socket.onerror = (err) => {
+      console.error("WebSocket error:", err);
+    };
+  
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+  
+   
+  }, [socket]);
 
   const scrollChatToBottom = () => {
     if (chatBodyRef.current) {
@@ -110,7 +102,7 @@ print("Predicted value for x=5:", prediction[0])
             />
             <span className="simesta-name">Simesta</span>
           </div>
-          <AIMessageRenderer content={dummyAIMessage} />
+          <AIMessageRenderer content={aiResponse} />
         </div>
       </div>
       <div className="chat-input-container">
@@ -121,7 +113,7 @@ print("Predicted value for x=5:", prediction[0])
             </button>
           </div>
         ) : null}
-        <Chatbox type={"chat"} />
+        <Chatbox loading={isLoading} handleSubmit={handleSubmit} type={"chat"} />
       </div>
     </div>
   );
