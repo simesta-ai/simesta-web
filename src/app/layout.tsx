@@ -8,7 +8,6 @@ import "highlight.js/styles/stackoverflow-light.css";
 import "highlight.js/styles/stackoverflow-dark.css";
 import StoreProvider from "@/components/providers/StoreProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import SocketProvider from "@/context/SocketProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +30,7 @@ export default function RootLayout({
       <body className={`${inter.className}`}>
         <StoreProvider>
           <ThemeProvider>
-            <SocketProvider>{children}</SocketProvider>
+            {children}
           </ThemeProvider>
         </StoreProvider>
       </body>

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, use } from "react";
 
 import Chatbox from "@/components/ui/ChatBox";
 import { ArrowDown } from "lucide-react";
@@ -16,6 +16,7 @@ import {
   connectChat,
   sendMessage,
   addLocalMessage,
+  fetchChatHistory,
 } from "@/lib/redux/slices/chatSlice";
 
 const ChatSection = ({
@@ -30,7 +31,7 @@ const ChatSection = ({
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const { messages, streamingMessage, isLoading, isConnected, chatId } =
     useSelector((state: RootState) => state.nonPersisted.chat);
-
+ 
   useEffect(() => {
     const el = chatBodyRef.current;
     if (!el) return;
@@ -49,20 +50,16 @@ const ChatSection = ({
   };
 
   useEffect(() => {
-    const idToConnect = initial_chat_id || null;
+    // ✅ Auto-connect WebSocket when dashboard loads (if not already connected)
+    if (!isConnected) {
+      dispatch(connectChat({ chatId }));
+    }
+    // Fetch chat history if chat_id is provided
+    if (initial_chat_id) {
+      dispatch(fetchChatHistory({ chatId: initial_chat_id }));
+    }
 
-    const connectionPromise = dispatch(connectChat({ chatId: idToConnect }));
-
-    // Cleanup function runs on unmount
-    return () => {
-      connectionPromise.then((result) => {
-        if (typeof result.payload === "function") {
-          result.payload(); // Execute the socket closing function
-        }
-      });
-    };
-    // Re-connect only if dispatch or the initial_chat_id changes.
-  }, [dispatch, initial_chat_id]);
+  }, [isConnected, chatId]);
 
   const handleSubmit = (prompt: string) => {
     if (!prompt.trim() || !isConnected) return;
@@ -84,6 +81,10 @@ const ChatSection = ({
       });
     }
   };
+
+  useEffect(() => {
+    console.log(messages);
+  }, [messages, streamingMessage]);
 
   const displayMessages = [...messages];
   if (streamingMessage.length > 0) {

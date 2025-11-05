@@ -1,7 +1,7 @@
 "use client";
 
 import "@/styles/components/chatbox.css";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ArrowUp, Paperclip, Pencil, Mic, Check, X } from "lucide-react";
 import Button from "./Button";
 import OptionButton from "./OptionButton";
@@ -34,8 +34,9 @@ export default function Chatbox({
       status: "uploading" | "complete" | "error";
     }[]
   >([]);
-  const { fileProgressMap } =
-    useSelector((state: RootState) => state.nonPersisted.chat);
+  const { fileProgressMap } = useSelector(
+    (state: RootState) => state.nonPersisted.chat
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -115,28 +116,39 @@ export default function Chatbox({
   };
 
   // Use effect to monitor file progress from Redux store
+  // ✅ handle updating file progress in a stable callback
+  const updateFileProgress = useCallback(() => {
+    setAttachedFiles((prev) =>
+      prev.map((file) => {
+        const progressData = fileProgressMap[file.id];
+        if (!progressData) return file;
+
+        const newStatus = progressData.error
+          ? "error"
+          : progressData.is_complete
+          ? "complete"
+          : "uploading";
+
+        // ✅ Only update if something actually changed
+        if (
+          file.progress === progressData.progress &&
+          file.status === newStatus
+        ) {
+          return file;
+        }
+
+        return {
+          ...file,
+          progress: progressData.progress,
+          status: newStatus,
+        };
+      })
+    );
+  }, [fileProgressMap]);
+
   useEffect(() => {
-    attachedFiles.forEach((file) => {
-      const progressData = fileProgressMap[file.id];
-      if (progressData) {
-        setAttachedFiles((prev) =>
-          prev.map((f) =>
-            f.id === file.id
-              ? {
-                  ...f,
-                  progress: progressData.progress,
-                  status: progressData.error
-                    ? "error"
-                    : progressData.is_complete
-                    ? "complete"
-                    : "uploading",
-                }
-              : f
-          )
-        );
-      }
-    });
-  }, [fileProgressMap, attachedFiles]);
+    updateFileProgress();
+  }, [fileProgressMap, updateFileProgress]);
 
   useEffect(() => {
     const startRecording = async () => {
@@ -190,7 +202,7 @@ export default function Chatbox({
     {
       name: "Attach Files",
       icon: <Paperclip size={"1em"} />,
-      onClick: () => handleAttachClick,
+      onClick: () => handleAttachClick(),
     },
     {
       name: "Edit",
@@ -281,7 +293,7 @@ export default function Chatbox({
       />
 
       {attachedFiles.length > 0 && (
-        <div className="flex gap-2 pb-2 overflow-x-auto">
+        <div className="uploaded-files-container">
           {attachedFiles.map((file) => (
             <FileProgressCard key={file.id} file={file} onRemove={removeFile} />
           ))}

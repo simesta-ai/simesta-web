@@ -6,6 +6,9 @@
     opacity: 1;
     z-index: 5;
 }
+.hidden {
+    display: none;
+}
 .chatbox.on-chat {
     width: 100%;
 }
@@ -54,6 +57,18 @@
 
 .dark .recording-btn:hover {
     background-color: var(--color-neutral-600);
+}
+.uploaded-files-container {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    width: 100%;
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Chrome, Safari, Edge */
+.uploaded-files-container::-webkit-scrollbar {
+    display: none;
 }
 
 .audio-visualizer {

@@ -32,7 +32,7 @@ const CreateCoursePage = () => {
     return () => {
       dispatch(resetCreationState());
     };
-  }, [dispatch, status]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (status === "completed" && courseId) {

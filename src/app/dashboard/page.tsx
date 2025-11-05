@@ -30,11 +30,13 @@ export default function DashboardPage() {
   ];
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      await loadCourses();
-    };
-    fetchCourses();
-  }, [loadCourses]);
+    loadCourses();
+
+    // ✅ Auto-connect WebSocket when dashboard loads (if not already connected)
+    if (!isConnected) {
+      dispatch(connectChat({ chatId }));
+    }
+  }, [loadCourses, isConnected, chatId]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -57,11 +59,12 @@ export default function DashboardPage() {
         console.error("Failed to connect WebSocket. Cannot send message.");
         return;
       }
-      
     }
 
     sendMessage(prompt);
-    const targetChatPath = chatId ? `/course/create?chat_id=${chatId}` : "/course/create?chat_id=new";
+    const targetChatPath = chatId
+      ? `/course/create?chat_id=${chatId}`
+      : "/course/create?chat_id=new";
     router.push(targetChatPath);
   };
 

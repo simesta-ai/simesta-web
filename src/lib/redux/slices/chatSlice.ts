@@ -61,7 +61,7 @@ const initialState: ChatState = {
 };
 
 // --- Global Socket Instance ---
-const WS_BASE_URL = "ws://localhost:8000/ws/chat";
+const WS_BASE_URL = "ws://localhost:8000/api/v1/chat/ws/chat";
 let chatSocket: WebSocket | null = null;
 let cleanupFn: (() => void) | null = null;
 
@@ -97,6 +97,7 @@ export const connectChat = createAsyncThunk<
 
       chatSocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log("WebSocket Message Received:", data);
 
         if (data.type === "server_init") {
           dispatch(chatSlice.actions.setChatId(data.chat_id));
@@ -182,6 +183,42 @@ export const sendFiles = (files: FilePayload[]) => {
   }
 };
 
+export const fetchChatHistory = createAsyncThunk<
+  ChatMessage[],
+  { chatId: string },
+  { state: RootState; dispatch: any }
+>(
+  "chat/fetchHistory",
+  async ({ chatId }, { getState, rejectWithValue }) => {
+    const authState = getState().persisted.auth;
+    const token = authState.authToken;
+
+    if (!token) {
+      return rejectWithValue("No auth token found for fetching chat history.");
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/chat/${authState.user!.id}/history/${chatId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.data.messages as ChatMessage[];
+    } catch (error) {
+      return rejectWithValue(`Failed to fetch chat history: ${error}`);
+    }
+  }
+);
+
 // --- Slice Definition ---
 const chatSlice = createSlice({
   name: "chat",
@@ -247,6 +284,18 @@ const chatSlice = createSlice({
       .addCase(connectChat.rejected, (state, action) => {
         state.isLoading = false;
         state.error = (action.payload as string) || "Connection failed.";
+      })
+      .addCase(fetchChatHistory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchChatHistory.fulfilled, (state, action) => {
+        state.messages = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchChatHistory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = (action.payload as string) || "Failed to fetch history.";
       });
   },
 });

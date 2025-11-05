@@ -1,0 +1,105 @@
+.fp-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  min-width: 12rem;
+  max-width: 200px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.dark .fp-card {
+  background-color: var(--color-neutral-800);
+  border: 1px solid #374151;
+}
+
+.fp-file-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fp-progress-circle {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fp-progress-svg {
+  width: 32px;
+  height: 32px;
+  transform: rotate(-90deg);
+}
+
+.fp-progress-bg {
+  color: #e5e7eb;
+}
+
+.fp-progress-bar {
+  color: #6366f1;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.fp-progress-text {
+  font-size: 5px;
+  font-weight: 600;
+  color: #374151;
+  position: absolute;
+}
+
+.dark .fp-progress-text {
+  color: #d1d5db;
+}
+
+
+
+.fp-file-labels {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.fp-file-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.dark .fp-file-name {
+  color: #d1d5db;
+}
+
+.fp-file-meta {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #6b7280;
+  padding-top: 5px;
+}
+
+.fp-remove-btn {
+  padding: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #6b7280;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+
+.fp-icon-success {
+  color: #10b981;
+}
+
+.fp-icon-default {
+  color: #6b7280;
+}
