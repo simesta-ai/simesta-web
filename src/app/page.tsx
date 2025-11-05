@@ -1,3 +1,4 @@
+
 import Header from "@/components/layout/Header";
 import "@/styles/pages/home.css";
 import Chatbox from "@/components/ui/ChatBox";
@@ -54,7 +55,7 @@ export default function Home() {
         <p className="text-md subtext">
           Learn anything you want, at your own pace.
         </p>
-        <Chatbox type="dashboard" />
+        <Chatbox loading={false} type="dashboard" />
         <div className="flex gap-4 flex-wrap justify-center items-center padding-4">
           {recommendations.map((r, i) => {
             return (

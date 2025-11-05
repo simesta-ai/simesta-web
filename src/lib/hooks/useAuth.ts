@@ -19,7 +19,7 @@ export const useAuth = () => {
   const pathname = usePathname();
 
   const { user, authToken, refreshToken, isAuthenticated, isLoading, error } =
-    useSelector((state: RootState) => state.auth);
+    useSelector((state: RootState) => state.persisted.auth);
 
   useEffect(() => {
     // Initialize auth state from localStorage (if available)

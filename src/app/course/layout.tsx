@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import CourseHeader from "@/components/layout/CourseHeader";
@@ -12,7 +13,7 @@ export default function CourseLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isSideSectionOpen } = useSelector((state: RootState) => state.ui);
+  const { isSideSectionOpen } = useSelector((state: RootState) => state.persisted.ui);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const [leftWidth, setLeftWidth] = useState(0); // % value

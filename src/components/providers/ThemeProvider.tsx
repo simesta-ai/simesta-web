@@ -11,7 +11,7 @@ interface ThemeProviderProps {
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
   const dispatch = useDispatch();
-  const { theme } = useSelector((state: RootState) => state.ui);
+  const { theme } = useSelector((state: RootState) => state.persisted.ui);
   
   useEffect(() => {
     dispatch(initializeTheme());

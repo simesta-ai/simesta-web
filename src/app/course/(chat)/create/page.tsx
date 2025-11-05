@@ -1,63 +1,48 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import "@/styles/pages/create-course.css";
 import CheckIcon from "@/components/ui/Check";
 import Loader from "@/components/ui/Loader";
 import { Box } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { RootState, AppDispatch } from "@/lib/redux/store";
+import {
+  startCourseCreation,
+  resetCreationState,
+} from "@/lib/redux/slices/courseCreationSlice";
 
 const CreateCoursePage = () => {
-  const [stages, setStages] = useState({
-    firstStage: {
-      title: "Scaffolding course context",
-      isCompleted: true,
-      isCurrent: false,
-      isError: false,
-      isLoading: false,
-      subprocesses: [
-        "Generating course context...",
-        "Generating course title...",
-        "Generating course description...",
-      ],
-    },
-    secondStage: {
-      title: "Generating course content",
-      isCompleted: false,
-      isCurrent: true,
-      isError: false,
-      isLoading: true,
-      subprocesses: [
-        "Generating course outline...",
-        "Generating course modules...",
-        "Generating course lessons...",
-      ],
-    },
-    thirdStage: {
-      title: "Generating course assets",
-      isCompleted: false,
-      isCurrent: false,
-      isError: false,
-      isLoading: false,
-      subprocesses: [
-        "Generating course images...",
-        "Generating course videos...",
-        "Generating course quizzes...",
-      ],
-    },
-    fourthStage: {
-      title: "Finalizing course",
-      isCompleted: false,
-      isCurrent: false,
-      isError: false,
-      isLoading: false,
-      subprocesses: [
-        "Generating course summary...",
-        "Generating course feedback...",
-        "Generating course completion certificate...",
-      ],
-    },
-  });
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { stages, courseId, status } = useSelector(
+    (state: RootState) => state.nonPersisted.courseCreation
+  );
+
+  useEffect(() => {
+    // If the status is not already in progress (e.g., if navigated directly here), start it.
+    if (status === "idle") {
+      dispatch(startCourseCreation());
+    }
+
+    // Cleanup: Reset the state when the user leaves this page
+    return () => {
+      dispatch(resetCreationState());
+    };
+  }, [dispatch, status]);
+
+  useEffect(() => {
+    if (status === "completed" && courseId) {
+      router.push(`/course/${courseId}`);
+    } else if (status === "error") {
+      console.error("Course creation failed.");
+      // Optional: Display error message or navigate to an error page
+    }
+  }, [status, courseId, router]);
+
   return (
     <div className="create-course-container w-full">
       <div className="flex items-center w-full justify-center flex-col">

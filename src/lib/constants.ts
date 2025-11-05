@@ -7,16 +7,19 @@ import auralLm from "@/assets/aural-lm.png";
 
 export const ENVIRONMENT_VARIABLES = {
   API: {
-    BASE_URL: process.env.API_BASE_URL,
+    BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   },
 };
 
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
+    LOGIN: "/api/v1/auth/login",
+    REGISTER: "/api/v1/auth/register",
     LOGOUT: "/auth/logout",
     REFRESH: "/auth/refresh",
+  },
+  COURSES: {
+    USER_COURSES: "/api/v1/courses/users",
   },
 };
 

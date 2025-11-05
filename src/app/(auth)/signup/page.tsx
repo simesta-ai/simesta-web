@@ -9,9 +9,10 @@ import "@/styles/pages/auth.css";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { clearError } from "@/lib/redux/slices/authSlice";
 import { useDispatch } from "react-redux";
+import Loader from "@/components/ui/Loader";
 
 export default function SignupPage() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -91,7 +92,7 @@ export default function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 error={errors.name}
-                leftIcon={<UserRound size={18} />}
+                leftIcon={<UserRound size={14} />}
                 fullWidth
               />
             </div>
@@ -105,7 +106,7 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 error={errors.email}
-                leftIcon={<Mail size={18} />}
+                leftIcon={<Mail size={14} />}
                 fullWidth
               />
             </div>
@@ -119,7 +120,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={errors.password}
-                leftIcon={<Lock size={18} />}
+                leftIcon={<Lock size={14} />}
                 rightIcon={
                   <button
                     type="button"
@@ -127,9 +128,9 @@ export default function SignupPage() {
                     className="text-text-tertiary hover:text-text-secondary"
                   >
                     {showPassword ? (
-                      <EyeOff className="right-icon" size={18} />
+                      <EyeOff className="right-icon" size={14} />
                     ) : (
-                      <Eye className="right-icon" size={18} />
+                      <Eye className="right-icon" size={14} />
                     )}
                   </button>
                 }
@@ -137,7 +138,7 @@ export default function SignupPage() {
               />
             </div>
 
-            <div className="flex items-center justify-between mb-4">
+            {/* <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -151,10 +152,14 @@ export default function SignupPage() {
                   Remember me
                 </label>
               </div>
-            </div>
+            </div> */}
 
             <Button type="submit" isLoading={isLoading} fullWidth>
-              Sign Up
+              {!isLoading ? (
+                "Sign Up"
+              ) : (
+                <Loader size={20} styles="color: #ffffff" />
+              )}
             </Button>
           </form>
 

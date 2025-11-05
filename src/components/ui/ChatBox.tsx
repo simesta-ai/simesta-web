@@ -6,16 +6,137 @@ import { ArrowUp, Paperclip, Pencil, Mic, Check, X } from "lucide-react";
 import Button from "./Button";
 import OptionButton from "./OptionButton";
 import Loader from "./Loader";
+import FileProgressCard from "./FileProgressCard";
+import { sendFiles } from "@/lib/redux/slices/chatSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/redux/store";
 
-export default function Chatbox({ type, handleSubmit, loading }: { type?: string, handleSubmit: (prompt: string) => void, loading: boolean }) {
+export default function Chatbox({
+  type,
+  loading,
+  onSubmit,
+}: {
+  type?: string;
+  loading: boolean;
+  onSubmit: (prompt: string) => void;
+}) {
   const [prompt, setPrompt] = useState("");
   const [abilities, setAbilities] = useState({
     editing: false,
   });
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState<
+    {
+      id: string;
+      name: string;
+      progress: number;
+      status: "uploading" | "complete" | "error";
+    }[]
+  >([]);
+  const { fileProgressMap } =
+    useSelector((state: RootState) => state.nonPersisted.chat);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [stream, setStream] = useState<MediaStream | null>(null);
+
+  const handleSubmit = (promptText: string) => {
+    if (
+      promptText.trim() ||
+      attachedFiles.some((f) => f.status === "complete")
+    ) {
+      // Here I would typically process the prompt and files
+      const fileNames = attachedFiles
+        .filter((f) => f.status === "complete")
+        .map((f) => f.name)
+        .join(", ");
+      const fullPrompt = fileNames
+        ? `${promptText} (Files attached: ${fileNames})`
+        : promptText;
+      onSubmit(fullPrompt);
+      setAttachedFiles([]);
+    }
+  };
+
+  const handleAttachClick = () => {
+    // Check for files still uploading
+    const uploading = attachedFiles.some((f) => f.status === "uploading");
+    if (uploading) {
+      console.warn("Please wait for current uploads to finish or cancel them.");
+      return;
+    }
+    fileInputRef.current?.click();
+  };
+
+  const removeFile = (id: string) => {
+    setAttachedFiles((prev) => prev.filter((file) => file.id !== id));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      Array.from(files).forEach((file) => {
+        const fileId = crypto.randomUUID();
+        const newFile = {
+          id: fileId,
+          name: file.name,
+          progress: 0,
+          status: "uploading" as const,
+        };
+
+        setAttachedFiles((prev) => [...prev, newFile]);
+
+        // Dispatch the sendFiles action
+        const reader = new FileReader();
+        reader.onload = () => {
+          const contentB64 = (reader.result as string).split(",")[1]; // Get base64 content
+          const success = sendFiles([
+            {
+              file_uuid: fileId,
+              filename: file.name,
+              content_b64: contentB64,
+            },
+          ]);
+          if (!success) {
+            // Update file status to error
+            setAttachedFiles((prev) =>
+              prev.map((f) =>
+                f.id === fileId ? { ...f, status: "error", progress: 0 } : f
+              )
+            );
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Clear the input value so the same file can be selected again
+      e.target.value = "";
+    }
+  };
+
+  // Use effect to monitor file progress from Redux store
+  useEffect(() => {
+    attachedFiles.forEach((file) => {
+      const progressData = fileProgressMap[file.id];
+      if (progressData) {
+        setAttachedFiles((prev) =>
+          prev.map((f) =>
+            f.id === file.id
+              ? {
+                  ...f,
+                  progress: progressData.progress,
+                  status: progressData.error
+                    ? "error"
+                    : progressData.is_complete
+                    ? "complete"
+                    : "uploading",
+                }
+              : f
+          )
+        );
+      }
+    });
+  }, [fileProgressMap, attachedFiles]);
 
   useEffect(() => {
     const startRecording = async () => {
@@ -69,7 +190,7 @@ export default function Chatbox({ type, handleSubmit, loading }: { type?: string
     {
       name: "Attach Files",
       icon: <Paperclip size={"1em"} />,
-      onClick: () => console.log("Attach Files"),
+      onClick: () => handleAttachClick,
     },
     {
       name: "Edit",
@@ -84,6 +205,14 @@ export default function Chatbox({ type, handleSubmit, loading }: { type?: string
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
+  };
+
+  const handlePromptKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(prompt);
+      setPrompt("");
+    }
   };
 
   const placeholders = [
@@ -129,14 +258,43 @@ export default function Chatbox({ type, handleSubmit, loading }: { type?: string
 
     return () => clearInterval(interval);
   }, []);
+
+  const isUploading = attachedFiles.some((f) => f.status === "uploading");
+  // Check if there's text OR at least one completed file
+  const canSend =
+    (prompt.length > 0 && !loading) ||
+    attachedFiles.some((f) => f.status === "complete");
+
   return (
-    <div className={`chatbox ${type == "chat" ? "on-chat" : ""} relative flex flex-col gap-4 padding-3`}>
+    <div
+      className={`chatbox ${
+        type == "chat" ? "on-chat" : ""
+      } relative flex flex-col gap-4 padding-3`}
+    >
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        multiple
+        className="hidden"
+        disabled={isUploading}
+      />
+
+      {attachedFiles.length > 0 && (
+        <div className="flex gap-2 pb-2 overflow-x-auto">
+          {attachedFiles.map((file) => (
+            <FileProgressCard key={file.id} file={file} onRemove={removeFile} />
+          ))}
+        </div>
+      )}
+
       {!isRecording ? (
         <textarea
           className={`${type == "chat" ? "on-chat-section" : ""} chat-input`}
           placeholder={type == "chat" ? "Say something..." : placeholder}
           value={prompt}
           onChange={handlePromptChange}
+          onKeyDown={handlePromptKeyDown}
         />
       ) : (
         <div className="audio-visualizer">
@@ -175,10 +333,17 @@ export default function Chatbox({ type, handleSubmit, loading }: { type?: string
                 <Mic size={"1.5em"} />
               </button>
               <Button
-                variant="round-secondary"
+                variant="chat-send-btn"
                 size="sm"
-                onClick={() => handleSubmit(prompt)}
-                disabled={prompt.length > 0 && !loading ? false : true}
+                onClick={() => {
+                  handleSubmit(prompt);
+                  setPrompt("");
+                }}
+                disabled={
+                  prompt.length > 0 && !loading && !isUploading && canSend
+                    ? false
+                    : true
+                }
               >
                 {!loading ? (
                   <ArrowUp size={"2em"} />

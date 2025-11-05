@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Loader from "@/components/ui/Loader";
 import { Gauge, Timer, Languages } from "lucide-react";
 import Image from "next/image";
+import axios from "axios";
 
 import "@/styles/pages/maincourse.css";
 import CourseNavigataion from "@/components/layout/CourseNavigataion";
@@ -28,11 +29,21 @@ const CoursePage = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      setCourse(courseData);
-      setIsLoadingCourse(false);
-    }, 2000);
-  });
+    const fetchCourse = async () => {
+      try {
+        setIsLoadingCourse(true);
+        // Simulating an API call to fetch course data
+        const response = await axios.get(`http://localhost:8000/courses/${id}`);
+        setCourse(response.data.course);
+      } catch (error) {
+        console.error("Error fetching course data:", error);
+      } finally {
+        setIsLoadingCourse(false);
+      }
+    };
+
+    fetchCourse();
+  }, [id]);
   return (
     <div className="main-course-container">
       {isLoadingCourse || !course ? (

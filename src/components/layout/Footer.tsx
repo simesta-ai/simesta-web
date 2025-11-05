@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 export default function Footer() {
-  const theme = useSelector((state: RootState) => state.ui.theme);
+  const theme = useSelector((state: RootState) => state.persisted.ui.theme);
   return (
     <footer className="footer">
       <div className="container">

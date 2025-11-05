@@ -12,23 +12,38 @@ import {
 } from "redux-persist";
 
 import uiReducer from "./slices/uiSlice";
-import authreducer from "./slices/authSlice";
+import authReducer from "./slices/authSlice";
+import courseReducer from "./slices/courseSlice";
+import chatReducer from "./slices/chatSlice";
+import courseCreationReducer from "./slices/courseCreationSlice"
+
+const nonPersistedReducer = combineReducers({
+    course: courseReducer,
+    chat: chatReducer,
+    courseCreation: courseCreationReducer
+});
 
 const persistConfig = {
   key: "simesta-web",
   storage,
-  whitelist: ["auth"], // only persist auth state
+  whitelist: ["ui", "auth"], 
 };
 
-const rootReducer = combineReducers({
-  ui: uiReducer,
-  auth: authreducer,
+const persistedReducers = combineReducers({
+    ui: uiReducer,
+    auth: authReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const rootPersistedReducer = persistReducer(persistConfig, persistedReducers);
+
+const rootReducer = combineReducers({
+    persisted: rootPersistedReducer, 
+    nonPersisted: nonPersistedReducer, 
+});
+
 
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer, 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

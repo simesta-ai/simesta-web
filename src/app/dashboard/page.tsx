@@ -4,81 +4,37 @@ import Chatbox from "@/components/ui/ChatBox";
 import "@/styles/pages/home.css";
 import "@/styles/pages/dashboard.css";
 import CourseCard from "@/components/ui/CourseCard";
-import { CourseAbridged } from "@/lib/types";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useCourse } from "@/lib/hooks/useCourse";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/redux/store";
+import {
+  sendMessage,
+  connectChat,
+  addLocalMessage,
+} from "@/lib/redux/slices/chatSlice";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
-  const [isLoadingUserCourses] = useState(false);
-  const [isLoadingCommunityCourses] = useState(false);
-
+  const { loadCourses, userCourses, isLoadingUserCourses } = useCourse();
+  const { isConnected, chatId } = useSelector(
+    (state: RootState) => state.nonPersisted.chat
+  );
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const recommendations = [
     "Data analysis with Python",
     "Quantum Mechanics",
     "Introduction to cloud computing with AWS",
   ];
 
-  const courses: CourseAbridged[] = [
-    {
-      id: "gshag-usnund",
-      title: "Data analysis with Python",
-      created_at: new Date(),
-      level: "Beginner",
-      duration: 3893733,
-      updated_at: new Date(),
-      description: "Learn data analysis using Python and its libraries.",
-      image:
-        "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
-    },
-
-    {
-      id: "gshag-usnund",
-      title: "Data analysis with Python",
-      created_at: new Date(),
-      level: "Beginner",
-      duration: 3893733,
-      updated_at: new Date(),
-      description: "Learn data analysis using Python and its libraries.",
-      image:
-        "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
-    },
-    {
-      id: "gshag-usnund",
-      title: "Data analysis with Python",
-      level: "Beginner",
-      duration: 3893733,
-      updated_at: new Date(),
-      created_at: new Date(),
-      description: "Learn data analysis using Python and its libraries.",
-      image:
-        "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
-    },
-  ];
-
-  const communityCourses: CourseAbridged[] = [
-    {
-      id: "gshag-usnund",
-      title: "Data analysis with Python",
-      level: "Beginner",
-      duration: 3893733,
-      updated_at: new Date(),
-      created_at: new Date(),
-      description: "Learn data analysis using Python and its libraries.",
-      image:
-        "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
-    },
-    {
-      id: "gshag-uusbud",
-      level: "Beginner",
-      duration: 3893733,
-      updated_at: new Date(),
-      created_at: new Date(),
-      title: "Data analysis with Python",
-      description: "Learn data analysis using Python and its libraries.",
-      image:
-        "https://res.cloudinary.com/di1uklizr/image/upload/v1734444678/course-images/hw10xtqbkepxcqn120vn.png",
-    },
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      await loadCourses();
+    };
+    fetchCourses();
+  }, [loadCourses]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -87,18 +43,46 @@ export default function DashboardPage() {
     });
   };
 
+  const handleDashboardSubmit = async (prompt: string) => {
+    if (!prompt.trim()) return;
+
+    dispatch(
+      addLocalMessage({ role: "user", content: prompt, timestamp: Date.now() })
+    );
+
+    if (!isConnected) {
+      const connectResult = await dispatch(connectChat({ chatId: chatId }));
+
+      if (connectResult.meta.requestStatus === "rejected") {
+        console.error("Failed to connect WebSocket. Cannot send message.");
+        return;
+      }
+      
+    }
+
+    sendMessage(prompt);
+    const targetChatPath = chatId ? `/course/create?chat_id=${chatId}` : "/course/create?chat_id=new";
+    router.push(targetChatPath);
+  };
+
   return (
     <>
       {/* Hero Section */}
       <section className="hero items-center flex flex-col">
         <h3 className="hero-text">
           Create a course and{" "}
-          <span className="text-primary-600">start learning.</span>
+          <span className="text-primary-600 ai-gradient-text">
+            start learning.
+          </span>
         </h3>
         <p className="text-md subtext">
           Learn anything you want, at your own pace.
         </p>
-        <Chatbox />
+        <Chatbox
+          type="dashboard"
+          loading={false}
+          onSubmit={handleDashboardSubmit}
+        />
         <div className="flex gap-4 flex-wrap justify-center items-center padding-4">
           {recommendations.map((r, i) => {
             return (
@@ -124,13 +108,13 @@ export default function DashboardPage() {
               <div className="skeleton course-card-skeleton" />
               <div className="skeleton course-card-skeleton" />
             </>
-          ) : courses.length > 0 ? (
-            courses.map((course) => {
+          ) : userCourses.length > 0 ? (
+            userCourses.map((course) => {
               return <CourseCard key={course.id} course={course} />;
             })
           ) : null}
         </div>
-        <h3 className="hero-text mt-12">From The Community</h3>
+        {/* <h3 className="hero-text mt-12">From The Community</h3>
         <p className="text-md subtext">Continue learning with your courses.</p>
         <div
           className={`flex flex-wrap gap-8 ${
@@ -149,7 +133,7 @@ export default function DashboardPage() {
               return <CourseCard key={course.id} course={course} />;
             })
           )}
-        </div>
+        </div> */}
       </section>
     </>
   );

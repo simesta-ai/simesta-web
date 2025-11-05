@@ -27,8 +27,8 @@ function StreakIconFilled() {
         fill="#FFCA36"
         stroke="#FFCA36"
         stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -38,9 +38,10 @@ export default function Header() {
   const dispatch = useDispatch();
   const pathname = usePathname();
   const [showAuthButtons, setShowAuthButtons] = useState(true);
-  const [isLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const theme = useSelector((state: RootState) => state.ui.theme);
+  const theme = useSelector((state: RootState) => state.persisted.ui.theme);
+  const user = useSelector((state: RootState) => state.persisted.auth.isAuthenticated ? state.persisted.auth.user : null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,6 +51,21 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Toggle isLoggedIn based on user state
+  useEffect(() => {
+    console.log("User in Header:", user);
+    if (user) {
+      setIsLoggedIn(true);
+      setShowAuthButtons(false);
+    } else {
+      setIsLoggedIn(false);
+      setShowAuthButtons(true);
+    }
+  }, [user]);
+
+  // Hide auth buttons on auth pages or when logged in  
+
 
   useEffect(() => {
     if (pathname === "/login" || pathname === "/signup" || isLoggedIn) {
@@ -103,17 +119,17 @@ export default function Header() {
             </Link>
           </>
         ) : null}
-        {isLoggedIn ? (
+        {isLoggedIn && user ? (
           <>
             <button className="flex profile-info items-center gap-2">
               <StreakIconFilled />
-              <h5 className="profile-name text-md">1-Day Streak</h5>
+              <h5 className="profile-name text-md">{`${user.user_activity.streak_count}-Day Streak`}</h5>
             </button>
             <button className="profile-info flex items-center gap-2">
               <div className="padding-4 flex items-center justify-center bg-primary-500 w-5 h-5 rounded-sm">
-                <h5 className="text-white text-xs">S</h5>
+                <h5 className="text-white text-xs">{user.name[0].toUpperCase()}</h5>
               </div>
-              <h4 className="profile-name">Samuel&apos;s Assistant</h4>
+              <h4 className="profile-name">{`${user.name.split(' ')[0]}'s Assistant`}</h4>
             </button>
           </>
         ) : null}

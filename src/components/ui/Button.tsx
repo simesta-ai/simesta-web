@@ -4,7 +4,7 @@ import React from "react";
 import "@/styles/components/button.css";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "round-secondary" | "outline-ability" | "outline-ability-active";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "round-secondary" | "outline-ability" | "outline-ability-active" | "chat-send-btn";
   size?: "sm" | "md" | "lg" | "xs" | "xxs";
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -41,6 +41,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       outline: "border border-border bg-transparent outline text-text-primary",
       "outline-ability": "outline-ability",
       "outline-ability-active": "outline-ability-active",
+      "chat-send-btn": "chat-send-btn rounded-full"
     };
 
     const sizeStyles = {

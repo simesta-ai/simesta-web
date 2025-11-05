@@ -54,7 +54,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           } gap-2 flex items-center ${baseInputStyles} ${errorInputStyles} ${widthStyles} ${paddingStyles}`}
         >
           {leftIcon && (
-            <div className="translate-y-10 text-text-tertiary">{leftIcon}</div>
+            <div className="text-text-tertiary">{leftIcon}</div>
           )}
           <input
             ref={ref}
@@ -65,7 +65,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="translate-y-10 text-text-tertiary">{rightIcon}</div>
+            <div className="text-text-tertiary">{rightIcon}</div>
           )}
         </div>
         {hint && !error ? (

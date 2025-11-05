@@ -22,7 +22,7 @@ import "@/styles/components/header.css";
 const CourseHeader = () => {
   const dispatch = useDispatch();
   const { courseHeaderTitle, theme } = useSelector(
-    (state: RootState) => state.ui
+    (state: RootState) => state.persisted.ui
   );
 
   const handleToggleTheme = () => {

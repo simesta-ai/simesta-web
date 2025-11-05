@@ -3,11 +3,12 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "@/styles/global.css";
 import "@/styles/layout.css";
-import 'katex/dist/katex.min.css';
-import 'highlight.js/styles/stackoverflow-light.css'
-import 'highlight.js/styles/stackoverflow-dark.css'
+import "katex/dist/katex.min.css";
+import "highlight.js/styles/stackoverflow-light.css";
+import "highlight.js/styles/stackoverflow-dark.css";
 import StoreProvider from "@/components/providers/StoreProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
+import SocketProvider from "@/context/SocketProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +30,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className}`}>
         <StoreProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <SocketProvider>{children}</SocketProvider>
+          </ThemeProvider>
         </StoreProvider>
       </body>
     </html>

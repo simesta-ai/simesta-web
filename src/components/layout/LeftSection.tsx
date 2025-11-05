@@ -10,8 +10,9 @@ import SearchSection from "@/containers/SearchSection";
 import "@/styles/components/chatbox.css";
 
 const LeftSection = () => {
-  const { sideSectionType } = useSelector((state: RootState) => state.ui);
+  const { sideSectionType } = useSelector((state: RootState) => state.persisted.ui);
   const [isLoading] = useState<boolean>(false);
+  const { chatId } = useSelector((state: RootState) => state.nonPersisted.chat);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
@@ -19,7 +20,7 @@ const LeftSection = () => {
         <Loader size={20} />
       ) : sideSectionType ? (
         <>
-          {sideSectionType === "chat" && <ChatSection chat_id="usia" />}
+          {sideSectionType === "chat" && <ChatSection chat_id={chatId} />}
           {sideSectionType === "history" && <HistorySection />}
           {sideSectionType === "search" && <SearchSection />}
         </>
